@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  react:
+    container_name: react
+    build: ./react
+    ports:
+      - 3001:3001
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./react:/app/react
+    networks:
+      - golang_test_network
+
+  go:
+    container_name: go
+    build:
+      context: ./golang
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    ports:
+      - 8080:8080
+    env_file:
+      - ./mysql/.env
+    depends_on:
+      - db
+    volumes:
+      - type: bind
+        source: ./golang/src
+        target: /go/src
+    networks:
+      - golang_test_network
+
+  db:
+    container_name: db
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
+    tty: true
+    platform: linux/x86_64
+    ports:
+      - 3306:3306
+    env_file:
+      - ./mysql/.env
+    volumes:
+      - type: volume
+        source: mysql_test_volume
+        target: /var/lib/mysql
+      - type: bind
+        source: ./mysql/init
+        target: /docker-entrypoint-initdb.d
+    networks:
+      - golang_test_network
+
+volumes:
+  mysql_test_volume:
+    name: mysql_test_volume
+
+networks:
+  golang_test_network:
+    #external: true
+    driver: bridge
