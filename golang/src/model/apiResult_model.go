@@ -1,36 +1,31 @@
 package model
 
 import (
+	"src/model/entities"
 	"database/sql"
 	"net/http"
 	"time"
 )
 
 type ApiResultModel interface {
-	FetchApiResult(r *http.Request) ([]*ApiResult, error)
-	AddApiResult(r *http.Request) (sql.Result, error)
-	ChangeApiResult(r *http.Request) (sql.Result, error)
-	DeleteApiResult(r *http.Request) (sql.Result, error)
+	FetchApiResult(r *http.Request) ([]*entities.ApiResult, error)
+	AddApiResult(r entities.ApiResult) (sql.Result, error)
+	ChangeApiResult(r entities.ApiResult) (sql.Result, error)
+	DeleteApiResult(r entities.ApiResult) (sql.Result, error)
 }
 
 type apiResultModel struct {
-}
-
-type ApiResult struct {
-	ApiName     string    `json:"apiName"`
-	ApiStatus   string    `json:"apiStatus"`
-	ApiDateTime time.Time `json:"apiDateTime"`
 }
 
 func CreateApiResultModel() ApiResultModel {
 	return &apiResultModel{}
 }
 
-func (tm *apiResultModel) FetchApiResult(r *http.Request) ([]*ApiResult, error) {
+func (am *apiResultModel) FetchApiResult(r *http.Request) ([]*entities.ApiResult, error) {
   err := r.ParseForm()
 
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 
 	sql := `SELECT apiName, apiStatus, apiDateTime FROM apiResultHistory WHERE apiName = ?`
@@ -39,10 +34,9 @@ func (tm *apiResultModel) FetchApiResult(r *http.Request) ([]*ApiResult, error) 
 	if err != nil {
 		return nil, err
 	}
-
 	defer rows.Close()
 
-	var apiResults []*ApiResult
+	var apiResults []*entities.ApiResult
 
 	for rows.Next() {
 		var apiName string
@@ -60,7 +54,7 @@ func (tm *apiResultModel) FetchApiResult(r *http.Request) ([]*ApiResult, error) 
       return nil, err
     }
 
-		apiResults = append(apiResults, &ApiResult{
+		apiResults = append(apiResults, &entities.ApiResult{
 			ApiName: apiName,
 			ApiStatus: apiStatus,
 			ApiDateTime: apiDateTime,
@@ -70,20 +64,16 @@ func (tm *apiResultModel) FetchApiResult(r *http.Request) ([]*ApiResult, error) 
 	return apiResults, nil
 }
 
-func (tm *apiResultModel) AddApiResult(r *http.Request) (sql.Result, error) {
-	// t := time.Now()
-	// entropy := ulid.Monotonic(rand.New(rand.NewSource(t.UnixNano())), 0)
-	// id := ulid.MustNew(ulid.Timestamp(t), entropy)
+func (tm *apiResultModel) AddApiResult(r entities.ApiResult) (sql.Result, error) {
+	req := entities.ApiResult{
+		ApiName: r.ApiName,
+		ApiStatus: r.ApiStatus,
+		ApiDateTime: r.ApiDateTime,
+	}
 
-	// req := entities.Todo{
-	// 	ApiName: r.ApiName,
-	// 	ApiStatus: r.ApiStatus,
-	// 	ApiDateTime: r.ApiDateTime,
-	// }
+	sql := `INSERT INTO apiResultHistory(apiName, apiStatus, apiDateTime) VALUES(?, ?, ?)`
 
-	sql := `INSERT INTO todos(id, name, status) VALUES("aaa", "bbb", "vvv")`
-
-	result, err := Db.Exec(sql)
+	result, err := Db.Exec(sql, req.ApiName, req.ApiStatus, req.ApiDateTime)
 
 	if err != nil {
 		return result, err
@@ -92,7 +82,7 @@ func (tm *apiResultModel) AddApiResult(r *http.Request) (sql.Result, error) {
 	return result, nil
 }
 
-func (tm *apiResultModel) ChangeApiResult(r *http.Request) (sql.Result, error) {
+func (tm *apiResultModel) ChangeApiResult(r entities.ApiResult) (sql.Result, error) {
 	sql := `UPDATE todos SET status = "aaa" WHERE id = "aaa"`
 
 	// afterStatus := "作業中"
@@ -109,7 +99,7 @@ func (tm *apiResultModel) ChangeApiResult(r *http.Request) (sql.Result, error) {
 	return result, nil
 }
 
-func (tm *apiResultModel) DeleteApiResult(r *http.Request) (sql.Result, error) {
+func (tm *apiResultModel) DeleteApiResult(r entities.ApiResult) (sql.Result, error) {
 	sql := `DELETE FROM todos WHERE id = "aaa"`
 
 	result, err := Db.Exec(sql)

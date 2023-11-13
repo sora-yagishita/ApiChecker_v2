@@ -33,11 +33,13 @@ function StatusDisplay() {
       {params}
     ).then(response => {
       setStatus(api.apiName, response.status);
+      addTest(api.apiName, response.status);
     }).catch(error => {
       setStatus(api.apiName, error.response.status);
+      addTest(api.apiName, error.response.status);
     })
 
-    await axios.get('http://localhost:8080/fetch-apiResult',
+    await axios.get('http://localhost:8080/api-result/fetch-apiResult',
       {
         params: {
           apiName: api.apiName
@@ -67,6 +69,22 @@ function StatusDisplay() {
       ...lastApiRequestTime,
       [apiName]: new Date(),
     }));
+  }
+
+  const addTest = async (apiName, status) => {
+    await axios.post('http://localhost:8080/api-result/add-apiResult',
+      {
+        params: {
+          apiName: apiName,
+          ApiStatus: status,
+          ApiDateTime: new Date()
+        }
+      }
+    ).then(response => {
+      console.log(response);
+    }).catch(error => {
+      console.log(error);
+    });
   }
 
   return (

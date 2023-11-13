@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"src/controller/dto"
+	"src/model/entities"
 	"src/model"
 	"encoding/json"
 	"fmt"
@@ -15,17 +17,18 @@ type ApiResultController interface {
 }
 
 type apiResultController struct {
-	tm model.ApiResultModel
+	apiResultModel model.ApiResultModel
 }
 
-func CreateApiResultController(tm model.ApiResultModel) ApiResultController {
-	return &apiResultController{tm}
+func CreateApiResultController(apiResultModel model.ApiResultModel) ApiResultController {
+	return &apiResultController{apiResultModel}
 }
 
-func (tc *apiResultController) FetchApiResult(w http.ResponseWriter, r *http.Request) {
-	apiResult, err := tc.tm.FetchApiResult(r)
+func (ac *apiResultController) FetchApiResult(w http.ResponseWriter, r *http.Request) {
+	apiResult, err := ac.apiResultModel.FetchApiResult(r)
 
 	if err != nil {
+		w.WriteHeader(500)
 		fmt.Fprint(w, err)
 		return
 	}
@@ -33,6 +36,7 @@ func (tc *apiResultController) FetchApiResult(w http.ResponseWriter, r *http.Req
 	json, err := json.Marshal(apiResult)
 
 	if err != nil {
+		w.WriteHeader(500)
 		fmt.Fprint(w, err)
 		return
 	}
@@ -40,8 +44,39 @@ func (tc *apiResultController) FetchApiResult(w http.ResponseWriter, r *http.Req
 	fmt.Fprint(w, string(json))
 }
 
-func (tc *apiResultController) AddApiResult(w http.ResponseWriter, r *http.Request) {
-	// 省略
+func (ac *apiResultController) AddApiResult(w http.ResponseWriter, r *http.Request) {
+	body := make([]byte, r.ContentLength)
+	r.Body.Read(body)
+	var addApiResultRequest dto.AddApiResultRequest
+	err := json.Unmarshal(body, &addApiResultRequest)
+
+	if err != nil {
+		w.WriteHeader(500)
+		fmt.Fprint(w, err)
+		return
+	}
+
+	result, err := ac.apiResultModel.AddApiResult(entities.ApiResult{
+		ApiName: addApiResultRequest.ApiName,
+		ApiStatus: addApiResultRequest.ApiStatus,
+		ApiDateTime: addApiResultRequest.ApiDateTime,
+	})
+
+	if err != nil {
+		w.WriteHeader(500)
+		fmt.Fprint(w, err)
+		return
+	}
+
+	json, err := json.Marshal(result)
+
+	if err != nil {
+		w.WriteHeader(500)
+		fmt.Fprint(w, err)
+		return
+	}
+
+	fmt.Fprint(w, string(json))
 }
 
 func (tc *apiResultController) ChangeApiResult(w http.ResponseWriter, r *http.Request) {
