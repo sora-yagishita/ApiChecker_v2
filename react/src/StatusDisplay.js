@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ApiResultGraph from './ApiResultGraph';
 
 function StatusDisplay() {
   const [apiInfo, setApiInfo] = useState([]);
@@ -33,23 +34,11 @@ function StatusDisplay() {
       {params}
     ).then(response => {
       setStatus(api.apiName, response.status);
-      addTest(api.apiName, response.status);
+      addAipRsult(api.apiName, response.status);
     }).catch(error => {
       setStatus(api.apiName, error.response.status);
-      addTest(api.apiName, error.response.status);
+      addAipRsult(api.apiName, error.response.status);
     })
-
-    await axios.get('http://localhost:8080/api-result/fetch-apiResult',
-      {
-        params: {
-          apiName: api.apiName
-        }
-      }
-    ).then(response => {
-      console.log(response);
-    }).catch(error => {
-      console.log(error);
-    });
   };
 
   const convertJson = (api) => {
@@ -71,17 +60,14 @@ function StatusDisplay() {
     }));
   }
 
-  const addTest = async (apiName, status) => {
+  const addAipRsult = async (apiName, status) => {
     await axios.post('http://localhost:8080/api-result/add-apiResult',
       {
-        params: {
-          apiName: apiName,
-          ApiStatus: status,
-          ApiDateTime: new Date()
-        }
+        apiName: apiName,
+        ApiStatus: String(status),
+        ApiDateTime: new Date(),
       }
     ).then(response => {
-      console.log(response);
     }).catch(error => {
       console.log(error);
     });
@@ -94,6 +80,7 @@ function StatusDisplay() {
           <p>API名: {api.apiName}</p>
           <p>ステータスコード: {statusCodes[api.apiName]}</p>
           <p>最終更新時間: {lastApiRequestTime[api.apiName] ? lastApiRequestTime[api.apiName].toLocaleTimeString() : 'まだ送信されていません'}</p>
+          <ApiResultGraph apiName={api.apiName} />
         </div>
       ))}
     </div>
