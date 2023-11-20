@@ -5,7 +5,7 @@ import (
 )
 
 type ApiResult struct {
-	ApiName string `json:"apiName"`
-	ApiStatus string `json:"apiStatus"`
+	ApiName     string    `json:"apiName"`
+	ApiStatus   string    `json:"apiStatus"`
 	ApiDateTime time.Time `json:"apiDateTime"`
 }
