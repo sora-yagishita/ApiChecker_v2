@@ -6,11 +6,11 @@ import (
 
 // Fetch
 type FetchApiResultHistoryResult struct {
-	ApiResultID        int       `json:"api_result_id"`
-	ApiID              int       `json:"api_id"`
-	RequestEndpoint    string    `json:"request_endpoint"`
-	RequestParamString string    `json:"request_param_string"`
-	RequestDateTime    time.Time `json:"request_date_time"`
-	ResponseStatusCode string    `json:"response_status_code"`
-	ResponseData       string    `json:"response_data"`
+	ApiResultID        int       `json:"apiResultId"`
+	ApiID              int       `json:"apiId"`
+	RequestEndpoint    string    `json:"requestEndpoint"`
+	RequestParamString string    `json:"requestParamString"`
+	RequestDateTime    time.Time `json:"requestDateTime"`
+	ResponseStatusCode string    `json:"responseStatusCode"`
+	ResponseData       string    `json:"responseData"`
 }

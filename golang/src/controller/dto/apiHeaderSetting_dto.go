@@ -2,31 +2,31 @@ package dto
 
 // Fetch
 type FetchApiHeaderSettingRequest struct {
-	ApiSettingID int `json:"api_setting_id"`
+	ApiSettingID int `json:"apiSettingId"`
 }
 
 type FetchApiHeaderSettingResponse struct {
-	ApiSettingID       int    `json:"api_setting_id"`
-	ApiHeaderSettingNo int    `json:"api_header_setting_no"`
-	ApiHeaderKey       string `json:"api_header_key"`
-	ApiHeaderValue     string `json:"api_header_value"`
+	ApiSettingID       int    `json:"apiSettingId"`
+	ApiHeaderSettingNo int    `json:"apiHeaderSettingNo"`
+	ApiHeaderKey       string `json:"apiHeaderKey"`
+	ApiHeaderValue     string `json:"apiHeaderValue"`
 }
 
 // Add
 type AddApiHeaderSettingRequest struct {
-	ApiSettingID   int    `json:"api_setting_id"`
-	ApiHeaderKey   string `json:"api_header_key"`
-	ApiHeaderValue string `json:"api_header_value"`
+	ApiSettingID   int    `json:"apiSettingId"`
+	ApiHeaderKey   string `json:"apiHeaderKey"`
+	ApiHeaderValue string `json:"apiHeaderValue"`
 }
 
 // Update
 type UpdateApiHeaderSettingRequest struct {
-	ApiSettingID   int    `json:"api_setting_id"`
-	ApiHeaderKey   string `json:"api_header_key"`
-	ApiHeaderValue string `json:"api_header_value"`
+	ApiSettingID   int    `json:"apiSettingId"`
+	ApiHeaderKey   string `json:"apiHeaderKey"`
+	ApiHeaderValue string `json:"apiHeaderValue"`
 }
 
 // Delete
 type DeleteApiHeaderSettingRequest struct {
-	ApiSettingID int `json:"api_setting_id"`
+	ApiSettingID int `json:"apiSettingId"`
 }

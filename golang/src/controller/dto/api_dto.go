@@ -2,29 +2,29 @@ package dto
 
 // Fetch
 type FetchApiRequest struct {
-	ApiID int `json:"api_id"`
+	ApiId string `json:"apiId"`
 }
 
 type FetchApiResponse struct {
-	ApiID          int    `json:"api_id"`
-	ApiName        string `json:"api_name"`
-	ApiDescription string `json:"api_description"`
+	ApiId          string `json:"apiId"`
+	ApiName        string `json:"apiName"`
+	ApiDescription string `json:"apiDescription"`
 }
 
 // Add
 type AddApiRequest struct {
-	ApiName        string `json:"api_name"`
-	ApiDescription string `json:"api_description"`
+	ApiName        string `json:"apiName"`
+	ApiDescription string `json:"apiDescription"`
 }
 
 // Update
 type UpdateApiRequest struct {
-	ApiID          int    `json:"api_id"`
-	ApiName        string `json:"api_name"`
-	ApiDescription string `json:"api_description"`
+	ApiId          string `json:"apiId"`
+	ApiName        string `json:"apiName"`
+	ApiDescription string `json:"apiDescription"`
 }
 
 // Delete
 type DeleteApiRequest struct {
-	ApiID int `json:"api_id"`
+	ApiId string `json:"apiId"`
 }

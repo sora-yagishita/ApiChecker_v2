@@ -2,31 +2,31 @@ package dto
 
 // Fetch
 type FetchApiParamSettingRequest struct {
-	ApiSettingID int `json:"api_setting_id"`
+	ApiSettingID int `json:"apiSettingId"`
 }
 
 type FetchApiParamSettingResponse struct {
-	ApiSettingID      int    `json:"api_setting_id"`
-	ApiParamSettingNo int    `json:"api_param_setting_no"`
-	ApiParamKey       string `json:"api_param_key"`
-	ApiParamValue     string `json:"api_param_value"`
+	ApiSettingID      int    `json:"apiSettingId"`
+	ApiParamSettingNo int    `json:"apiParamSettingNo"`
+	ApiParamKey       string `json:"apiParamKey"`
+	ApiParamValue     string `json:"apiParamValue"`
 }
 
 // Add
 type AddApiParamSettingRequest struct {
-	ApiSettingID  int    `json:"api_setting_id"`
-	ApiParamKey   string `json:"api_param_key"`
-	ApiParamValue string `json:"api_param_value"`
+	ApiSettingID  int    `json:"apiSettingId"`
+	ApiParamKey   string `json:"apiParamKey"`
+	ApiParamValue string `json:"apiParamValue"`
 }
 
 // Update
 type UpdateApiParamSettingRequest struct {
-	ApiSettingID  int    `json:"api_setting_id"`
-	ApiParamKey   string `json:"api_param_key"`
-	ApiParamValue string `json:"api_param_value"`
+	ApiSettingID  int    `json:"apiSettingId"`
+	ApiParamKey   string `json:"apiParamKey"`
+	ApiParamValue string `json:"apiParamValue"`
 }
 
 // Delete
 type DeleteApiParamSettingRequest struct {
-	ApiSettingID int `json:"api_setting_id"`
+	ApiSettingID int `json:"apiSettingId"`
 }

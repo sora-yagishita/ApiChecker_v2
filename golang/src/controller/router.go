@@ -5,10 +5,6 @@ import (
 )
 
 type Router interface {
-	// FetchApiResult(w http.ResponseWriter, r *http.Request)
-	// AddApiResult(w http.ResponseWriter, r *http.Request)
-	// DeleteApiResult(w http.ResponseWriter, r *http.Request)
-	// ChangeApiResult(w http.ResponseWriter, r *http.Request)
 	HandleRequest()
 }
 
