@@ -7,7 +7,6 @@ import (
 	"src/controller/dto"
 	"src/model"
 	"src/model/entities"
-	"strconv"
 )
 
 type ApiController interface {
@@ -26,21 +25,7 @@ func CreateApiController(apiModel model.ApiModel) ApiController {
 }
 
 func (ac *apiController) FetchApi(w http.ResponseWriter, r *http.Request) {
-	body := make([]byte, r.ContentLength)
-	r.Body.Read(body)
-	var fetchApiRequest dto.FetchApiRequest
-	err := json.Unmarshal(body, &fetchApiRequest)
-
-	if err != nil {
-		w.WriteHeader(500)
-		fmt.Fprint(w, err)
-		return
-	}
-
-	apiId, err := strconv.Atoi(fetchApiRequest.ApiId)
-	result, err := ac.apiModel.FetchApi(entities.Api{
-		ApiId: apiId,
-	})
+	result, err := ac.apiModel.FetchApi(r)
 
 	if err != nil {
 		w.WriteHeader(500)

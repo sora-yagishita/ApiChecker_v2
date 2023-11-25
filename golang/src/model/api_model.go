@@ -2,11 +2,13 @@ package model
 
 import (
 	"database/sql"
+	"net/http"
 	"src/model/entities"
+	"strings"
 )
 
 type ApiModel interface {
-	FetchApi(r entities.Api) ([]*entities.Api, error)
+	FetchApi(r *http.Request) ([]*entities.Api, error)
 	AddApi(r entities.Api) (sql.Result, error)
 	UpdateApi(r entities.Api) (sql.Result, error)
 	DeleteApi(r entities.Api) (sql.Result, error)
@@ -19,15 +21,25 @@ func CreateApiModel() ApiModel {
 	return &apiModel{}
 }
 
-func (am *apiModel) FetchApi(r entities.Api) ([]*entities.Api, error) {
-	req := entities.Api{
-		ApiId: r.ApiId,
+func (am *apiModel) FetchApi(r *http.Request) ([]*entities.Api, error) {
+	err := r.ParseForm()
+
+	if err != nil {
+		return nil, err
 	}
 
-	sql := `SELECT api_id, api_name, api_description FROM Api WHERE api_id = ?`
+	sql := `SELECT api_id, api_name, api_description FROM Api`
+	var params []interface{}
 
-	rows, err := Db.Query(sql, req.ApiId)
+	apiIds := strings.Split(r.FormValue("apiId"), ",")
+	if len(apiIds) > 0 && apiIds[0] != "" {
+		sql += " WHERE api_id IN (" + strings.Repeat("?,", len(apiIds)-1) + "?)"
+		for _, id := range apiIds {
+			params = append(params, id)
+		}
+	}
 
+	rows, err := Db.Query(sql, params...)
 	if err != nil {
 		return nil, err
 	}
