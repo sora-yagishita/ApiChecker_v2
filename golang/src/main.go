@@ -8,17 +8,23 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var apiResultModel = model.CreateApiResultModel()
 var apiModel = model.CreateApiModel()
+var apiSettingModel = model.CreateApiSettingModel()
+var apiHeaderSettingModel = model.CreateApiHeaderSettingModel()
+var apiParamSettingModel = model.CreateApiParamSettingModel()
 
-var apiResultController = controller.CreateApiResultController(apiResultModel)
 var apiController = controller.CreateApiController(apiModel)
+var apiSettingController = controller.CreateApiSettingController(apiSettingModel)
+var apiHeaderSettingController = controller.CreateApiHeaderSettingController(apiHeaderSettingModel)
+var apiParamSettingController = controller.CreateApiParamSettingController(apiParamSettingModel)
 
-var router = controller.CreateRouter(apiResultController)
-var apiRouter = controller.CreateApiRouter(apiController)
+var router = controller.CreateRouter(
+	apiController,
+	apiSettingController,
+	apiHeaderSettingController,
+	apiParamSettingController)
 
 func main() {
 	router.HandleRequest()
-	apiRouter.HandleRequest()
 	http.ListenAndServe(":8080", nil)
 }

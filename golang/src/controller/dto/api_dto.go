@@ -1,10 +1,6 @@
 package dto
 
 // Fetch
-type FetchApiRequest struct {
-	ApiId string `json:"apiId"`
-}
-
 type FetchApiResponse struct {
 	ApiId          string `json:"apiId"`
 	ApiName        string `json:"apiName"`
@@ -19,12 +15,6 @@ type AddApiRequest struct {
 
 // Update
 type UpdateApiRequest struct {
-	ApiId          string `json:"apiId"`
 	ApiName        string `json:"apiName"`
 	ApiDescription string `json:"apiDescription"`
-}
-
-// Delete
-type DeleteApiRequest struct {
-	ApiId string `json:"apiId"`
 }

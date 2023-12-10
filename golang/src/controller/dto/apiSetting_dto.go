@@ -1,8 +1,24 @@
 package dto
 
-type ApiSetting struct {
-	ApiSettingID         int    `json:"apiSetting_id"`
-	ApiID                int    `json:"apiId"`
+// Fetch
+type FetchApiSettingResponse struct {
+	ApiSettingId         int    `json:"apiSettingId"`
+	ApiId                int    `json:"apiId"`
+	RequestMethod        string `json:"requestMethod"`
+	Endpoint             string `json:"endpoint"`
+	ExecutionIntervalSec int    `json:"executionIntervalSec"`
+}
+
+// Add
+type AddApiSettingRequest struct {
+	ApiId                int    `json:"apiId"`
+	RequestMethod        string `json:"requestMethod"`
+	Endpoint             string `json:"endpoint"`
+	ExecutionIntervalSec int    `json:"executionIntervalSec"`
+}
+
+// Update
+type UpdateApiSettingRequest struct {
 	RequestMethod        string `json:"requestMethod"`
 	Endpoint             string `json:"endpoint"`
 	ExecutionIntervalSec int    `json:"executionIntervalSec"`

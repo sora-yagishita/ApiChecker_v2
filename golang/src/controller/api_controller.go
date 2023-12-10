@@ -78,10 +78,56 @@ func (ac *apiController) AddApi(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(json))
 }
 
-func (tc *apiController) UpdateApi(w http.ResponseWriter, r *http.Request) {
-	// 省略
+func (ac *apiController) UpdateApi(w http.ResponseWriter, r *http.Request) {
+	body := make([]byte, r.ContentLength)
+	r.Body.Read(body)
+	var updateApiRequest dto.UpdateApiRequest
+	err := json.Unmarshal(body, &updateApiRequest)
+
+	if err != nil {
+		w.WriteHeader(500)
+		fmt.Fprint(w, err)
+		return
+	}
+
+	result, err := ac.apiModel.UpdateApi(r, entities.Api{
+		ApiName:        updateApiRequest.ApiName,
+		ApiDescription: updateApiRequest.ApiDescription,
+	})
+
+	if err != nil {
+		w.WriteHeader(500)
+		fmt.Fprint(w, err)
+		return
+	}
+
+	json, err := json.Marshal(result)
+
+	if err != nil {
+		w.WriteHeader(500)
+		fmt.Fprint(w, err)
+		return
+	}
+
+	fmt.Fprint(w, string(json))
 }
 
-func (tc *apiController) DeleteApi(w http.ResponseWriter, r *http.Request) {
-	// 省略
+func (ac *apiController) DeleteApi(w http.ResponseWriter, r *http.Request) {
+	result, err := ac.apiModel.DeleteApi(r)
+
+	if err != nil {
+		w.WriteHeader(500)
+		fmt.Fprint(w, err)
+		return
+	}
+
+	json, err := json.Marshal(result)
+
+	if err != nil {
+		w.WriteHeader(500)
+		fmt.Fprint(w, err)
+		return
+	}
+
+	fmt.Fprint(w, string(json))
 }
