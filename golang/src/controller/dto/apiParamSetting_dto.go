@@ -1,10 +1,6 @@
 package dto
 
 // Fetch
-type FetchApiParamSettingRequest struct {
-	ApiSettingId int `json:"apiSettingId"`
-}
-
 type FetchApiParamSettingResponse struct {
 	ApiSettingId      int    `json:"apiSettingId"`
 	ApiParamSettingNo int    `json:"apiParamSettingNo"`
@@ -24,9 +20,4 @@ type AddApiParamSettingRequest struct {
 type UpdateApiParamSettingRequest struct {
 	ApiParamKey   string `json:"apiParamKey"`
 	ApiParamValue string `json:"apiParamValue"`
-}
-
-// Delete
-type DeleteApiParamSettingRequest struct {
-	ApiSettingId int `json:"apiSettingId"`
 }

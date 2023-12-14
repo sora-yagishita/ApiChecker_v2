@@ -13,18 +13,21 @@ type router struct {
 	apiSettingController       ApiSettingController
 	apiHeaderSettingController ApiHeaderSettingController
 	apiParamSettingController  ApiParamSettingController
+	apiResultHistoryController ApiResultHistoryController
 }
 
 func CreateRouter(
 	apiController ApiController,
 	apiSettingController ApiSettingController,
 	apiHeaderSettingController ApiHeaderSettingController,
-	apiParamSettingController ApiParamSettingController) Router {
+	apiParamSettingController ApiParamSettingController,
+	apiResultHistoryController ApiResultHistoryController) Router {
 	return &router{
 		apiController:              apiController,
 		apiSettingController:       apiSettingController,
 		apiHeaderSettingController: apiHeaderSettingController,
-		apiParamSettingController:  apiParamSettingController}
+		apiParamSettingController:  apiParamSettingController,
+		apiResultHistoryController: apiResultHistoryController}
 }
 
 func (ro *router) HandleRequest() {
@@ -32,6 +35,7 @@ func (ro *router) HandleRequest() {
 	http.HandleFunc("/api-setting/", ro.HandleApiSettingRequest)
 	http.HandleFunc("/api-header-setting/", ro.HandleApiHeaderSettingRequest)
 	http.HandleFunc("/api-param-setting/", ro.HandleApiParamSettingRequest)
+	http.HandleFunc("/api-result-history/", ro.HandleApiResultHistoryRequest)
 }
 
 func (ro *router) HandleApiRequest(w http.ResponseWriter, r *http.Request) {
@@ -101,6 +105,24 @@ func (ro *router) HandleApiParamSettingRequest(w http.ResponseWriter, r *http.Re
 		ro.apiParamSettingController.DeleteApiParamSetting(w, r)
 	case prefix + "update":
 		ro.apiParamSettingController.UpdateApiParamSetting(w, r)
+	default:
+		w.WriteHeader(405)
+	}
+}
+
+func (ro *router) HandleApiResultHistoryRequest(w http.ResponseWriter, r *http.Request) {
+	HeaderSet(w, r)
+	prefix := "/api-result-history/"
+
+	switch r.URL.Path {
+	case prefix + "fetch":
+		ro.apiResultHistoryController.FetchApiResultHistory(w, r)
+	case prefix + "add":
+		ro.apiResultHistoryController.AddApiResultHistory(w, r)
+	case prefix + "delete":
+		ro.apiResultHistoryController.DeleteApiResultHistory(w, r)
+	case prefix + "update":
+		ro.apiResultHistoryController.UpdateApiResultHistory(w, r)
 	default:
 		w.WriteHeader(405)
 	}
