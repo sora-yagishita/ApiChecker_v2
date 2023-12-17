@@ -73,7 +73,19 @@ func (am *apiResultHistoryModel) FetchApiResultHistory(r *http.Request) ([]*enti
 		var responseData string
 		var responseDateTime time.Time
 
-		if err := rows.Scan(&apiResultId, &apiId, &requestEndpoint, &requestParamString, &requestDateTime, &responseStatusCode, &responseData, &responseDateTime); err != nil {
+		var requestDateTimeRaw []uint8
+		var responseDateTimeRaw []uint8
+
+		if err := rows.Scan(&apiResultId, &apiId, &requestEndpoint, &requestParamString, &requestDateTimeRaw, &responseStatusCode, &responseData, &responseDateTimeRaw); err != nil {
+			return nil, err
+		}
+
+		requestDateTime, err := time.Parse("2006-01-02 15:04:05", string(requestDateTimeRaw))
+		if err != nil {
+			return nil, err
+		}
+		responseDateTime, err2 := time.Parse("2006-01-02 15:04:05", string(responseDateTimeRaw))
+		if err2 != nil {
 			return nil, err
 		}
 
@@ -130,19 +142,33 @@ func (tm *apiResultHistoryModel) UpdateApiResultHistory(r *http.Request, e entit
 		ResponseDateTime:   e.ResponseDateTime,
 	}
 
-	sql := `UPDATE ApiResultHistory SET request_method = ?, endpoint = ?, execution_interval_sec = ?`
+	sql := `UPDATE ApiResultHistory SET request_endpoint = ?, request_param_string = ?, request_date_time = ?, response_status_code = ?, response_data = ?, response_date_time = ?`
 
-	params := []interface{}{req.RequestEndpoint, req.RequestParamString, req.RequestDateTime}
+	params := []interface{}{req.RequestEndpoint, req.RequestParamString, req.RequestDateTime, req.ResponseStatusCode, req.ResponseData, req.ResponseDateTime}
+	var whereSql = ""
 
-	apiResultHistoryIds := strings.Split(r.FormValue("api_setting_id"), ",")
-	if len(apiResultHistoryIds) > 0 && apiResultHistoryIds[0] != "" {
-		sql += " WHERE api_setting_id IN (" + strings.Repeat("?,", len(apiResultHistoryIds)-1) + "?)"
-		for _, id := range apiResultHistoryIds {
+	apiResultIds := strings.Split(r.FormValue("api_result_id"), ",")
+	if len(apiResultIds) > 0 && apiResultIds[0] != "" {
+		whereSql += " WHERE api_result_id IN (" + strings.Repeat("?,", len(apiResultIds)-1) + "?)"
+		for _, id := range apiResultIds {
 			params = append(params, id)
 		}
 	}
 
-	result, err := Db.Exec(sql, params...)
+	apiIds := strings.Split(r.FormValue("api_id"), ",")
+	if len(apiIds) > 0 && apiIds[0] != "" {
+		if whereSql == "" {
+			whereSql += " WHERE"
+		} else {
+			whereSql += " AND"
+		}
+		whereSql += " api_id IN (" + strings.Repeat("?,", len(apiIds)-1) + "?)"
+		for _, id := range apiIds {
+			params = append(params, id)
+		}
+	}
+
+	result, err := Db.Exec(sql+whereSql, params...)
 
 	if err != nil {
 		return result, err
@@ -162,23 +188,23 @@ func (tm *apiResultHistoryModel) DeleteApiResultHistory(r *http.Request) (sql.Re
 	var params []interface{}
 	var whereSql = ""
 
-	apiIds := strings.Split(r.FormValue("api_id"), ",")
-	if len(apiIds) > 0 && apiIds[0] != "" {
-		whereSql += " WHERE api_id IN (" + strings.Repeat("?,", len(apiIds)-1) + "?)"
-		for _, id := range apiIds {
+	apiResultIds := strings.Split(r.FormValue("api_result_id"), ",")
+	if len(apiResultIds) > 0 && apiResultIds[0] != "" {
+		whereSql += " WHERE api_result_id IN (" + strings.Repeat("?,", len(apiResultIds)-1) + "?)"
+		for _, id := range apiResultIds {
 			params = append(params, id)
 		}
 	}
 
-	apiResultHistoryIds := strings.Split(r.FormValue("api_setting_id"), ",")
-	if len(apiResultHistoryIds) > 0 && apiResultHistoryIds[0] != "" {
+	apiIds := strings.Split(r.FormValue("api_id"), ",")
+	if len(apiIds) > 0 && apiIds[0] != "" {
 		if whereSql == "" {
 			whereSql += " WHERE"
 		} else {
 			whereSql += " AND"
 		}
-		whereSql += " api_setting_id IN (" + strings.Repeat("?,", len(apiResultHistoryIds)-1) + "?)"
-		for _, id := range apiResultHistoryIds {
+		whereSql += " api_id IN (" + strings.Repeat("?,", len(apiIds)-1) + "?)"
+		for _, id := range apiIds {
 			params = append(params, id)
 		}
 	}
